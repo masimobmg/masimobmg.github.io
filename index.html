@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ro">
+	<head>
+		<title>Masimo Candy BMG</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta id="metadesc" name="description" content="">
+		<script src="catalog.js"></script>
+		<script src="app.js"></script>
+		<link rel="stylesheet" href="app.css">
+	</head>
+	<body>
+		<center>
+		<a href="?page=home"><img src="./logo.png" alt="Masimo Candy BMG" class="logo"></img></a>
+		</center>
+		<center class="header hreal sticky">
+			<a href="?page=home">Acasă</a>
+			<a href="?page=products">Produse</a>
+			<a href="?page=cart">Coș</a>
+			<a href="?page=history">Istoric</a>
+			<a href="?page=about">Despre</a>
+		</center>
+		<div id="pages">
+			<div class="page hidden" id="underconstruction">
+				<h1>Site în construcție</h1>
+				<p>Acest site este momentan în construcție. Vă rugăm să încercați din nou într-o zi cu soare.</p>
+				<img src="./construct.webp" alt="Under Construction" style="width: 100%;"></img>
+				<br><br>
+				<b>Acces administratori</b>
+				<br>
+				<input type="password" placeholder="Parolă">
+				<button class="unstyled">Login</button>
+			</div>
+			<div class="page hidden" id="search">
+				<h1>Căutare</h1>
+				<input type="search" placeholder="Căutați produse..." style="width: 100%"></input><button style="width: 100%;" id="searchBtn">Căutare</button>
+				<br><br>
+				<center id="searchResults">
+				</center>
+			</div>
+			<div class="page hidden" id="about">
+				<h1>Despre</h1>
+				<i>
+				<p><span class="bold">Firmă: </span>MASIMO CANDY B.M.G. S.R.L.</p>
+				<p><span class="bold">Sediu social: </span>Sat Albeștii Pământeni, Comuna Albeștii de Argeș, Nr. 690, Județ Argeș</p>
+				<p><span class="bold">CUI: </span>48351103</p>
+				<p><span class="bold">Reg com: </span>J3/1384/19.06.2023</p>
+				</i>
+			</div>
+			<div class="page hidden" id="imgview">
+				<h1>Vizualizare imagine</h1>
+				<img src="" alt="" style="max-width: 90vw; max-height: 100vh;"></img>
+			</div>
+			<div class="page hidden" id="androidconv">
+				<h1>Convertire Catalog Mobil</h1>
+				<div>
+					<p>Date Catalog Mobil by AsI</p>
+					<textarea id="cmdata"></textarea>
+					<p>Date pt. Magazin Online</p>
+					<textarea id="outdata"></textarea>
+					<br><br><button>Convertire</button>
+				</div>
+			</div>
+			<div class="page hidden" id="history">
+				<h1>Istoric comenzi</h1>
+				<div>
+				</div>
+			</div>
+			<div class="page hidden" id="cart">
+				<h1>Coș</h1>
+				<center style="padding-bottom: 15px;"></center>
+				<center>
+				<div style="width: 100%; height: 5px; background-image: url('./rainbow.gif');"></div>
+				</center>
+				<h2>Total: 0 RON</h2>
+				<h1 style="margin-bottom: 0px;">Finalizați-vă comanda!</h1>
+				<i style="color: red;">Câmpurile obligatorii sunt marcate cu <b>*</b></i>
+				<br><br>
+				<b>Comand ca<span class="red">*</span></b><br>
+				<input type="radio" id="pers_fiz" value="fizica" name="pers"><label for="pers_fiz">Persoană fizică</label><br>
+				<input type="radio" id="pers_jur" value="juridica" name="pers"><label for="pers_jur">Persoană juridică</label><br><br>
+				<div id="form_fiz" style="display: none;">
+					<label for="name">Nume complet<span class="red">*</span></label><input type="text" id="name"><br>
+					<label for="cnp">CNP<span class="red">*</span></label><input type="number" id="cnp"><br>
+				</div>
+				<div id="form_jur">
+				<label for="biz">Firmă<span class="red">*</span></label><input type="text" id="biz"><br>
+				<label for="cui">CUI<span class="red">*</span></label><input type="text" id="cui"><br>
+				<label for="regcom">Reg. com.<span class="red">*</span></label><input type="text" id="regcom"><br>
+				</div>
+				<label for="email">Email</label><input type="email" id="email"><br>
+				<label for="phone">Telefon<span class="red">*</span></label><input type="phone" id="phone"><br>
+				<label for="address">Adresă<span class="red">*</span></label><input type="text" id="address"><br><br>
+				<button id="orderSend">COMANDĂ!</button>
+				<div class="magic"></div>
+			</div>
+			<div class="page hidden" id="products">
+				<h1>Produse</h1>
+				<div class="ct">
+					<p>Alege o categorie.</p>
+					<center class="list"><div class="listitem" onclick="window.location.href = '?page=search';" style="background-image: url('rainbow.gif')"><b><i>Căutare produse...</i></b></div></center>
+				</div>
+				<!--<b>Sfat!</b>&nbsp;<i>Apasă din nou pe link-ul <a href="?page=products" style="padding: 0px;">Produse</a> sau reîmprospătează pagina pentru a selecta o altă categorie.</i>-->
+			</div>
+			<div class="page hidden" id="home">
+				<h1 style="display: none;">Acasă</h1>
+				<h1>Produse recomandate</h1>
+				<div id="prodRecCont"><button class="left">&lt;</button><div id="prodRec"></div><button class="right">&gt;</button></div>
+				<br>
+				<button onclick="window.location.search = '?page=products';" style="width: 100%; background-image: url('rainbow.gif')">Toate produsele &gt;</button>
+				<!--<p>Bun venit la <i>Magazin Online</i>, locul unde găsești produse pentru toate nevoile tale! Răsfoiește <a href="?page=products" style="padding: 0px;">catalogul de produse</a> și creează coșul perfect!</p>
+				<b style="font-size: 10em;">:)</b>-->
+			</div>
+			<div class="page hidden" id="notfound">
+				<h1>Eroare</h1>
+				<p>Pagina cerută nu există pe site-ul nostru. Hai să ne întoarcem <a href="?page=home" style="padding: 0px;">acasă</a>.</p>
+			</div>
+			<div class="page" id="fallback">
+				<h1>Eroare</h1>
+				<p>Pentru a utiliza acest site, vă rugăm să activați JavaScript.</p>
+			</div>
+			<br>
+			<center><i>Site găzduit de <a href="https://pages.github.com" style="color: orange; text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000;" target="_blank" rel="noreferrer noopener">GitHub Pages</a></i></center>
+		</div>
+	</body>
+</html>
