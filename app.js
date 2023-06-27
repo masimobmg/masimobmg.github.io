@@ -743,10 +743,13 @@ dialog.appendChild(ifr1);
 
 	// Dacă parola nu este corectă, redirecționăm forțat utilizatorul la pagina de construcție.
 	if (ug("constructionPass") != constructionPass) {
-		pag = "underconstruction";
-		defaultPag = "underconstruction";
-		notFoundPag = "underconstruction";
+		//pag = "underconstruction";
+		//defaultPag = "underconstruction";
+		//notFoundPag = "underconstruction";
+		document.body.querySelector("#pages").classList.add("hidden");
+		document.body.querySelector("#underconstruction").classList.remove("hidden");
 		document.body.querySelector(".hreal").innerHTML = `<a href="?page=home">Acasă</a>`;
+		callbacks["underconstruction"](document.body.querySelector("#underconstruction"));
 	}
 
 	// ÎN CONSTRUCȚIE //

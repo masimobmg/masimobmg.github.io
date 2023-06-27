@@ -19,16 +19,20 @@
 			<a href="?page=history">Istoric</a>
 			<a href="?page=about">Despre</a>
 		</center>
+		<div class="hidden" id="underconstruction">
+			<h1>Site în construcție</h1>
+			<p>Acest site este momentan în construcție. Vă rugăm să încercați din nou într-o zi cu soare.</p>
+			<img src="./construct.webp" alt="Under Construction" style="width: 100%;"></img>
+			<br><br>
+			<b>Acces administratori</b>
+			<br>
+			<input type="password" placeholder="Parolă">
+			<button class="unstyled">Login</button>
+		</div>
 		<div id="pages">
-			<div class="page hidden" id="underconstruction">
-				<h1>Site în construcție</h1>
-				<p>Acest site este momentan în construcție. Vă rugăm să încercați din nou într-o zi cu soare.</p>
-				<img src="./construct.webp" alt="Under Construction" style="width: 100%;"></img>
-				<br><br>
-				<b>Acces administratori</b>
-				<br>
-				<input type="password" placeholder="Parolă">
-				<button class="unstyled">Login</button>
+			<div class="page hidden" id="devoptions">
+				<h1>Opțiuni pentru dezvoltatori</h1>
+				<button onclick="localStorage.setItem('constructionPass', '{}'); window.location.reload();">Ștergere parolă admin</button>
 			</div>
 			<div class="page hidden" id="search">
 				<h1>Căutare</h1>
@@ -118,8 +122,8 @@
 				<h1>Eroare</h1>
 				<p>Pentru a utiliza acest site, vă rugăm să activați JavaScript.</p>
 			</div>
-			<br>
-			<center><i>Site găzduit de <a href="https://pages.github.com" style="color: orange; text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000;" target="_blank" rel="noreferrer noopener">GitHub Pages</a></i></center>
 		</div>
+		<br>
+		<center><i>Site găzduit de <a href="https://pages.github.com" style="color: orange; text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000;" target="_blank" rel="noreferrer noopener">GitHub Pages</a></i></center>
 	</body>
 </html>
