@@ -84,66 +84,70 @@ function getOrderID() {
 
 // Creem elementul HTML în sine care reprezintă un produs în catalog/coș.
 function createProductElement(pr, onchange, controls = true, fakecart) {
+	// Div parinte
+	let p = document.createElement("div");
+	p.classList.add("productParent");
 	// Creem un div.
 	var e = document.createElement("div");
 	// Îl facem div de produs.
 	e.classList.add("product");
-	// Îi băgăm niște HTML hardcoded că mi-e lene.
-	// Sunt foarte conștient de faptul că am creat o mare vulnerabilitate XSS dar serios, eu sunt singurul care pot introduce date în catalog.
-	e.innerHTML = `<div class="container-bottom"><h3>${pr.name}</h3><p>Cod: ${pr.plu}<br>${pr.gr}/buc<br>${pr.bax}<br>${pr.price.toString()} ${config.currency}/${pr.unit}</p><button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button></div>`;
+	// Bagam in parent
+	p.appendChild(e);
 	// Punem și fundal dacă se poate.
 	if (pr.image) { e.style.backgroundImage = `url(${pr.image})`; };
+	// Lene
+	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr}/buc<br>${pr.bax}<br>${pr.price.toString()} ${config.currency}/${pr.unit}</p><button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
 	// buton img
-	e.querySelector(".imgvb").addEventListener("click", function() {
+	p.querySelector(".imgvb").addEventListener("click", function() {
 		window.location.href = "?page=imgview&img=" + pr.image.replace("./images/", "") + "&alt=" + pr.name;
 	});
 	if (!controls) {
-		e.querySelector(".subtract").remove();
+		p.querySelector(".subtract").remove();
 		//e.querySelector(".qt").remove();
-		e.querySelector(".add").remove();
+		p.querySelector(".add").remove();
 	} else {
 	// Atunci când utilizatorul vrea să introducă cantitatea de la tastatură
-	e.querySelector(".qt").addEventListener("click", function() {
+	p.querySelector(".qt").addEventListener("click", function() {
 		var cart = ug("cart");
 		// Cantitatăm cantitatea.
 		var v = prompt("Introduceți cantitatea:", cart[pr.plu.toString()] || 0) || 0;
 		// Vedem dacă ete bună.
 		if (v && !isNaN(Number(v)) && Number(v) >= 0) { cart[pr.plu.toString()] = Math.floor(Number(v));
 		us("cart", cart);
-		e.querySelector(".qt").innerText = cart[pr.plu.toString()];
+		p.querySelector(".qt").innerText = cart[pr.plu.toString()];
 		onchange();}
 	});
 	// Scădem 1 de la cant.
-	e.querySelector(".subtract").addEventListener("click", function() {
+	p.querySelector(".subtract").addEventListener("click", function() {
 		var cart = ug("cart");
 		var v = cart[pr.plu.toString()] || 0;
 		if (v > 0){
 			v--;
 			cart[pr.plu.toString()]=v;
 			us("cart", cart);
-			e.querySelector(".qt").innerText = cart[pr.plu.toString()];
+			p.querySelector(".qt").innerText = cart[pr.plu.toString()];
 			onchange();
 		}
 	});
 	// Adăugim unu la cant.
-	e.querySelector(".add").addEventListener("click", function() {
+	p.querySelector(".add").addEventListener("click", function() {
 		var cart = ug("cart");
 		var v = cart[pr.plu.toString()] || 0;
 		//if (v > 0){
 		v++;
 		cart[pr.plu.toString()]=v;
 		us("cart", cart);
-		e.querySelector(".qt").innerText = cart[pr.plu.toString()];
+		p.querySelector(".qt").innerText = cart[pr.plu.toString()];
 		onchange();
 						//}
 	});
 	}
-	return e;
+	return p;
 };
 
 // Creere desc categorie
 function createCategoryDesc(ct, cat) {
-	let products = ct.querySelectorAll(".product"); let str = `În categoria ${cat} găsiți ${products.length.toString()} produse, inclusiv `; for (let i = 0; i < products.length; i++) {
+	let products = ct.querySelectorAll(".productParent"); let str = `În categoria ${cat} găsiți ${products.length.toString()} produse, inclusiv `; for (let i = 0; i < products.length; i++) {
 	if ((i + 1) == products.length) { str += " și "; } else if (i > 0) { str += ", " };
 str += products[i].querySelector("h3").innerText;
 if ((i + 1) == products.length) str += ".";
@@ -279,6 +283,8 @@ function main() {
 			setMetaDesc("Faceți o comandă pe site-ul Masimo Candy BMG.");
 
 			let recCont = page.querySelector("#prodRec");
+			recCont.style.overflowX = "hidden";
+			recCont.classList.add("noselect");
 
 			// PRODUSE RECOMANDATE //
 			let recs = ["2001", "2008", "7006", "3005", "7012", "5002", "5005", "1001"];
@@ -286,15 +292,36 @@ function main() {
 			
 			for (let i = 0; i < recs.length; i++) recCont.appendChild(createProductElement(querySku(recs[i])));
 
+			// Tinem cont de pozitie
+			let pos = 1;
+			let reverse = false;
+
+			// AUTODERULARE
+			function autoderulare() {if (!reverse && pos < recs.length) { pos++; recCont.scrollBy(304, 0); } else if (reverse && pos > 0) { pos--; recCont.scrollBy(-304, 0); } else { reverse = !reverse; autoderulare(); }; };
+			let interval = setInterval(autoderulare, 3000);
+			//setTimeout(autoderulare, 1000);
+
 			// Butoane derulante
 			let leftbtn = page.querySelector(".left");
 			leftbtn.addEventListener("click", () => {
-				recCont.scrollBy(-305, 0);
+				recCont.style.overflowX = "scroll";
+				recCont.classList.remove("noselect");
+				recCont.scrollBy(-304, 0);
+				clearInterval(interval);
 			});
 			let rightbtn = page.querySelector(".right");
 			rightbtn.addEventListener("click", () => {
-				recCont.scrollBy(305, 0);
+				recCont.style.overflowX = "scroll";
+				recCont.classList.remove("noselect");
+				recCont.scrollBy(304, 0);
+				clearInterval(interval);
 			});
+			recCont.scroll({
+				top: 0,
+				left: 0,
+				behavior: "instant"
+			});
+			//recCont.scrollBy(304, 0);
 		},
 		// Pagina de produse.
 		"products": loadProducts,
@@ -485,6 +512,19 @@ dialog.appendChild(ifr1);
 
 			// Container produse
 			var cont = page.querySelector("center");
+			cont.style.display = "block";
+			// Buton ascundere
+			let btnhide = page.querySelector("#hidecart");
+			// Callback ascundere
+			btnhide.addEventListener("click", () => {
+				if (cont.style.display == "block") {
+					cont.style.display = "none";
+					btnhide.innerText = "Afișare coș";
+				} else {
+					cont.style.display = "block";
+					btnhide.innerText = "Ascundere coș";
+				}
+			});
 			// Text total
 			var tot = page.querySelector("h2");
 			// Conținutul coșului
@@ -584,6 +624,8 @@ dialog.appendChild(ifr1);
 						return;
 					};
 				};
+
+				if (rf.checked) { alert("Comenzile pe persoană fizică sunt momentan indisponibile."); return; };
 
 				// ID COMANDA
 				//let orderid = getOrderID()["toString"]();

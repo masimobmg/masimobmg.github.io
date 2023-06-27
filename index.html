@@ -3,7 +3,7 @@
 	<head>
 		<title>Masimo Candy BMG</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta id="metadesc" name="description" content="">
+		<meta id="metadesc" name="description" content="De pe site-ul nostru puteți comanda gume, jeleuri, licorice, acadele, comprimate, pufoase, jucării și suc.">
 		<script src="catalog.js"></script>
 		<script src="app.js"></script>
 		<link rel="stylesheet" href="app.css">
@@ -27,7 +27,7 @@
 			<b>Acces administratori</b>
 			<br>
 			<input type="password" placeholder="Parolă">
-			<button class="unstyled">Login</button>
+			<button style="font-size: 1em;">Login</button>
 		</div>
 		<div id="pages">
 			<div class="page hidden" id="devoptions">
@@ -71,30 +71,35 @@
 			</div>
 			<div class="page hidden" id="cart">
 				<h1>Coș</h1>
+				<button id="hidecart">Ascundere coș</button>
+				<br><br>
 				<center style="padding-bottom: 15px;"></center>
 				<center>
 				<div style="width: 100%; height: 5px; background-image: url('./rainbow.gif');"></div>
 				</center>
 				<h2>Total: 0 RON</h2>
 				<h1 style="margin-bottom: 0px;">Finalizați-vă comanda!</h1>
-				<i style="color: red;">Câmpurile obligatorii sunt marcate cu <b>*</b></i>
+				<i style="color: red;">Câmpurile obligatorii sunt marcate cu <b>*</b></i><br>
+				<i style="color: blue;">Comenzile pe persoană fizică sunt momentan indisponibile.</i>
 				<br><br>
 				<b>Comand ca<span class="red">*</span></b><br>
-				<input type="radio" id="pers_fiz" value="fizica" name="pers"><label for="pers_fiz">Persoană fizică</label><br>
+				<input type="radio" id="pers_fiz" value="fizica" name="pers" disabled><label for="pers_fiz">Persoană fizică</label><br>
 				<input type="radio" id="pers_jur" value="juridica" name="pers"><label for="pers_jur">Persoană juridică</label><br><br>
 				<div id="form_fiz" style="display: none;">
-					<label for="name">Nume complet<span class="red">*</span></label><input type="text" id="name"><br>
-					<label for="cnp">CNP<span class="red">*</span></label><input type="number" id="cnp"><br>
+					<label for="name">Nume<span class="red">*</span></label><br><input type="text" id="name"><br>
+					<label for="cnp">CNP<span class="red">*</span></label><br><input type="number" id="cnp"><br>
 				</div>
 				<div id="form_jur">
-				<label for="biz">Firmă<span class="red">*</span></label><input type="text" id="biz"><br>
-				<label for="cui">CUI<span class="red">*</span></label><input type="text" id="cui"><br>
-				<label for="regcom">Reg. com.<span class="red">*</span></label><input type="text" id="regcom"><br>
+					<label for="biz">Firmă<span class="red">*</span></label><br><input type="text" id="biz"><br>
+					<label for="cui">CUI<span class="red">*</span></label><br><input type="text" id="cui"><br>
+					<label for="regcom">Reg. com.<span class="red">*</span></label><br><input type="text" id="regcom"><br>
 				</div>
-				<label for="email">Email</label><input type="email" id="email"><br>
-				<label for="phone">Telefon<span class="red">*</span></label><input type="phone" id="phone"><br>
-				<label for="address">Adresă<span class="red">*</span></label><input type="text" id="address"><br><br>
-				<button id="orderSend">COMANDĂ!</button>
+				<label for="email">Email</label><br><input type="email" id="email"><br>
+				<label for="phone">Telefon<span class="red">*</span></label><br><input type="phone" id="phone"><br>
+				<label for="address">Adresă<span class="red">*</span></label><br><input type="text" id="address"><br><br>
+				<button id="orderSend">Comandă!</button>
+				<br><br>
+				<i>Făcând clic pe acest buton, veți trimite o comandă către Masimo Candy BMG cu produsele selectate mai sus. Veți fi contactat telefonic la scurt timp după aceasta, pentru a confirma comanda și a programa vizita (dacă este cazul).</i>
 				<div class="magic"></div>
 			</div>
 			<div class="page hidden" id="products">

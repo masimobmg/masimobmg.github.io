@@ -146,6 +146,15 @@ input[type=search] {
 	text-align: left;
 }
 
+.productParent {
+	overflow-x: initial;
+	white-space: initial;
+	padding: 0px;
+	width: 304px;
+	position: relative;
+	display: inline-block;
+}
+
 .product {
 	overflow-x: initial;
 	white-space: initial;
@@ -172,7 +181,7 @@ input[type=search] {
 	text-align: left;
 }
 
-button:not(.unstyled) {
+button:not(.unstyled), input:not(input[type=radio]):not(.unstyled) {
 	border: 1px solid black;
 	padding: 10px;
 	padding-top: 0px;
@@ -180,8 +189,13 @@ button:not(.unstyled) {
 	background-color: white;
 	color: black;
 	/*font-weight: bold;*/
+}
+
+button:not(.unstyled) {
 	font-size: 2em;
 }
+
+/* label:not(.unstyled) { font-size: 2em; } */
 
 .magic { display: none; }
 
@@ -194,6 +208,13 @@ label {
 	z-index: 99;
 	background-color: white;
 	top: 5px;
+}
+
+.noselect {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 * { font-family: sans-serif; }
