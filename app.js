@@ -96,15 +96,23 @@ function createProductElement(pr, onchange, controls = true, fakecart) {
 	// Punem și fundal dacă se poate.
 	if (pr.image) { e.style.backgroundImage = `url(${pr.image})`; };
 	// Lene
-	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr}/buc<br>${pr.bax}<br>${pr.price.toString()} ${config.currency}/${pr.unit}</p><button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
+	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr ? pr.gr + "/buc<br>" : ""}${pr.bax}<br><span class="price">${Number(pr.uprice).toFixed(2).toString()} ${config.currency}/${pr.unit}</span></p>${!pr.gr ? "<br>" : ""}<button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
 	// buton img
 	p.querySelector(".imgvb").addEventListener("click", function() {
 		window.location.href = "?page=imgview&img=" + pr.image.replace("./images/", "") + "&alt=" + pr.name;
 	});
-	if (!controls) {
+	if (!controls || pr.uprice == "0") {
 		p.querySelector(".subtract").remove();
 		//e.querySelector(".qt").remove();
 		p.querySelector(".add").remove();
+		if (pr.uprice == "0") {
+			p.querySelector(".qt").remove();
+			let text = document.createElement("i");
+			text.className = "red";
+			text.innerText = "Produs indisponibil.";
+			p.querySelector(".price").innerHTML = "";
+			p.querySelector(".price").appendChild(text);
+		}
 	} else {
 	// Atunci când utilizatorul vrea să introducă cantitatea de la tastatură
 	p.querySelector(".qt").addEventListener("click", function() {
@@ -202,10 +210,16 @@ function loadProducts(page) {
 			//btnback.style.fontSize = "inherit";
 			//h1.appendChild(btnback);
 			h1.innerHTML += `Categorie: ${n}`;
+			let count = 0;
+			for (let i = 0; i < c.length; i++) {
+				if (c[i].uprice != "0") count++;
+			}
+			h1.innerHTML += `<br><span style="font-size: initial; font-weight: initial; font-style: italic;">S-au încărcat ${count} produse.</span>`;
 			for (var i = 0; i < c.length; i++) {
-				ct.appendChild(createProductElement(c[i]));
+				if (c[i].uprice != "0") ct.appendChild(createProductElement(c[i]));
 			}
 			setMetaDesc(createCategoryDesc(ct, n));
+			return {"title": (n ? `Categorie: ${n}` : "Produse")};
 			break;
 		}
 	}
@@ -229,6 +243,7 @@ function loadProducts(page) {
 		cont.appendChild(el);
 	}
 	};
+	return {"title": "Produse"};
 }
 
 // PRODUS DUPA PLU
@@ -287,7 +302,7 @@ function main() {
 			recCont.classList.add("noselect");
 
 			// PRODUSE RECOMANDATE //
-			let recs = ["2001", "2008", "7006", "3005", "7012", "5002", "5005", "1001"];
+			let recs = ["3001", "3007", "7012", "7019", "7020", "7021", "7022", "7018", "2003", "2008", "5001", "1001", "2013", "4001", "4006"];
 			// PRODUSE RECOMANDATE //
 			
 			for (let i = 0; i < recs.length; i++) recCont.appendChild(createProductElement(querySku(recs[i])));
@@ -322,6 +337,7 @@ function main() {
 				behavior: "instant"
 			});
 			//recCont.scrollBy(304, 0);
+			return {"title": "Acasă"};
 		},
 		// Pagina de produse.
 		"products": loadProducts,
@@ -374,7 +390,7 @@ function main() {
 							if (o.img) delete o.img;
 							//if (o.price && o.tva) o.price = calcTva(tva[o.tva], o.price);
 							if (o.price) {} else { o.price = 0; };
-							if (o.uprice) delete o.uprice;
+							if (o.uprice) {} else { o.uprice = 0; };
 							o.plu = o.sku;
 							if (o.sku) delete o.sku;
 							o.unit = "buc";
@@ -565,12 +581,12 @@ dialog.appendChild(ifr1);
 				var total = 0;
 				// Pentru fiecare produs facem anmultire
 				for (var i = 0; i < prods.length; i++) {
-					total += prods[i].price * ug("cart")[prods[i].plu.toString()];
+					total += prods[i].uprice * ug("cart")[prods[i].plu.toString()];
 				}
 				// puterea luari de decizi :))))))))
-				if (raw) return total;
+				if (raw) return total.toFixed(2);
 				// Nu mai folosim else deoarece return iese oricum din funcție, iar rahatul ăsta de jos oricum nu se mai execută. Iată, am economisit câțiva octeți :)
-				tot.innerText = `Total: ${total.toString()} ${config.currency}`;
+				tot.innerText = `Total: ${total.toFixed(2)} ${config.currency}`;
 			}
 			// Funcție pentru a popula pagina HTML cu elementele din coș.
 			function prodElsLoad() {
@@ -726,7 +742,7 @@ dialog.appendChild(ifr1);
 						if (ug("cart")[prods[i].plu.toString()] > 0) {
 						// Creem un URL în care câmpul 0 (starea comenzii) este gol, deoarece starea comenzii se înregistrează în header (trimis de iframe-ul 0), de către agent.
 						// Apoi îl populăm cu date despre produs (cantitate, produs, pret, pretunitar, totalcomanda).
-						var url2 = config.gformURL.replace("FIELD5", `${t} ${config.currency}`).replace("FIELD0", "-").replace("FIELD1", ug("cart")[prods[i].plu.toString()].toString()).replace("FIELD2", prods[i].name).replace("FIELD3", `${(ug("cart")[prods[i].plu.toString()] * prods[i].price).toString()}%20${config.currency}`).replace("FIELD4", `${prods[i].price} ${config.currency}`).replace("FIELD6", "");
+						var url2 = config.gformURL.replace("FIELD5", `${t} ${config.currency}`).replace("FIELD0", "-").replace("FIELD1", ug("cart")[prods[i].plu.toString()].toString()).replace("FIELD2", prods[i].name).replace("FIELD3", `${((ug("cart")[prods[i].plu.toString()] * prods[i].uprice).toFixed(2)).toString()}%20${config.currency}`).replace("FIELD4", `${Number(prods[i].uprice).toFixed(2)} ${config.currency}`).replace("FIELD6", "");
 						// Creem un iframe, iframe-ul 2.
 						var ifr2 = document.createElement("iframe");
 						// Îi dăm url-ul.
@@ -784,7 +800,7 @@ dialog.appendChild(ifr1);
 	let constructionPass = "masimo.candy42";
 
 	// Dacă parola nu este corectă, redirecționăm forțat utilizatorul la pagina de construcție.
-	if (ug("constructionPass") != constructionPass) {
+	/*if (ug("constructionPass") != constructionPass) {
 		//pag = "underconstruction";
 		//defaultPag = "underconstruction";
 		//notFoundPag = "underconstruction";
@@ -792,7 +808,7 @@ dialog.appendChild(ifr1);
 		document.body.querySelector("#underconstruction").classList.remove("hidden");
 		document.body.querySelector(".hreal").innerHTML = `<a href="?page=home">Acasă</a>`;
 		callbacks["underconstruction"](document.body.querySelector("#underconstruction"));
-	}
+	}*/
 
 	// ÎN CONSTRUCȚIE //
 
@@ -814,10 +830,12 @@ dialog.appendChild(ifr1);
 
 	// Și o încărcăm.
 	page.classList.remove("hidden");
-	if (callbacks[pag]) callbacks[pag](page);
+	let rvalue;
+	if (callbacks[pag]) rvalue = callbacks[pag](page);
 	let title = page.querySelector("h1");
 	if (title) title = title.innerText;
 	if (title) {} else { title = ""; };
+	if (rvalue && rvalue.title) title = rvalue.title;
 	document.title = `${title}${title != "" ? " | " : ""}${config.storename}`;
 }
 
