@@ -374,7 +374,7 @@ function main() {
 				//alert("Bienvenue!");
 				let data = t1.value;
 				// TVA HARDCODIFICAT!!
-				let tva = {"Normal": 9};
+				let tva = {"Normal": 19, "Redus": 9};
 				if (data) {
 					try {
 						let result = {"Necategorizat": []};
@@ -382,18 +382,19 @@ function main() {
 						    function calcTva(tv, pret, diff=false) {         let val = tv;         if (diff) { return ((pret * val) / 100).toString(); } else { return (Number(pret) + ((pret * val) / 100)).toString(); };     };
 						for (let i = 0; i < data.length; i++) {
 							let o = data[i];
+							if (o) {
 							if (o.sku) {
 							o.bax = o.baxaj || "";
 							if (o.baxaj) delete o.baxaj;
 							if (o.img) o.img = o.img.replace("/sdcard/catalog.mobil/", "./images/");
 							o.image = o.img || "";
 							if (o.img) delete o.img;
-							//if (o.price && o.tva) o.price = calcTva(tva[o.tva], o.price);
+							if (o.uprice && o.tva) o.uprice = calcTva(tva[o.tva], o.uprice);
 							if (o.price) {} else { o.price = 0; };
 							if (o.uprice) {} else { o.uprice = 0; };
 							o.plu = o.sku;
 							if (o.sku) delete o.sku;
-							o.unit = "buc";
+							o.unit = "cut";
 								if (o.coment) delete o.coment;
 								if (o.tva) delete o.tva;
 							if (o.cat) {if (result[o.cat]) {} else { result[o.cat] = []; };
@@ -401,6 +402,7 @@ function main() {
 							delete o.cat;
 							} else { result.Necategorizat.push(o); };
 							}
+							};
 						}
 						console.log(data);
 						t2.value = JSON.stringify(result);
