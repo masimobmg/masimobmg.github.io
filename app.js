@@ -39,6 +39,8 @@ var config = {
 	"gformURL": "https://docs.google.com/forms/d/e/1FAIpQLSd0q4lF1wYOba5V7bTdHmBOyapKYiNUO1Vd-YmJ7mNJZN1kYA/formResponse?usp=pp_url&entry.1769074895=FIELD0&entry.443930057=FIELD1&entry.1701671710=FIELD2&entry.85262525=FIELD3&entry.1118109715=FIELD4&entry.818772431=FIELD5&entry.371274289=FIELD6"
 };
 
+const tva = {"Normal": 19, "Redus": 9};
+
 // Cînd se ancarcă modelul de obiect al documentului /jk
 window.addEventListener("DOMContentLoaded", function() {
 
@@ -82,6 +84,14 @@ function getOrderID() {
 	return ""+(self["cr"+"YPTO".toLowerCase()]["geT".toLowerCase()+"RandomVal"+"UES".toLowerCase()])(new Uint32Array(1))[69-(Math.floor(69.69))].toString()+(function(){return {"toString":(self[("d".toUpperCase())+"a"+"t"+"         E        ".trim().toLowerCase()][`${"n"}${"o"}${"w"}`])}})();
 };*/
 
+function pretCut(pr) {
+//console.log(pr.uprice, pr.bax.split(" ")[0], (Number(pr.uprice) * Number(pr.bax.split(" ")[0])).toFixed(2));
+	if (pr.uprice && pr.bax) {} else { return 0; };
+    return Number((Number(Number(pr.uprice).toFixed(2)) * Number(Number(pr.bax.split(" ")[0]).toFixed(2))).toFixed(2));
+}
+
+function calcTva(tv, pret, diff=false) {         let val = tv;         if (diff) { return ((pret * val) / 100).toString(); } else { return (Number(pret) + ((pret * val) / 100)).toString(); };     };
+
 // Creem elementul HTML în sine care reprezintă un produs în catalog/coș.
 function createProductElement(pr, onchange, controls = true, fakecart) {
 	// Div parinte
@@ -96,7 +106,7 @@ function createProductElement(pr, onchange, controls = true, fakecart) {
 	// Punem și fundal dacă se poate.
 	if (pr.image) { e.style.backgroundImage = `url(${pr.image})`; };
 	// Lene
-	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr ? pr.gr + "/buc<br>" : ""}${pr.bax}<br><span class="price">${Number(pr.uprice).toFixed(2).toString()} ${config.currency}/${pr.unit}</span></p>${!pr.gr ? "<br>" : ""}<button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
+	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr ? pr.gr + "/buc<br>" : ""}${pr.bax}<br><span class="price">${Number(pr.uprice).toFixed(2).toString()} ${config.currency}/buc<br>${Number(pr.price).toFixed(2)} ${config.currency}/cut</span></p>${!pr.gr ? "<br>" : ""}<button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
 	// buton img
 	p.querySelector(".imgvb").addEventListener("click", function() {
 		window.location.href = "?page=imgview&img=" + pr.image.replace("./images/", "") + "&alt=" + pr.name;
@@ -374,12 +384,10 @@ function main() {
 				//alert("Bienvenue!");
 				let data = t1.value;
 				// TVA HARDCODIFICAT!!
-				let tva = {"Normal": 19, "Redus": 9};
 				if (data) {
 					try {
 						let result = {"Necategorizat": []};
 						data = JSON.parse(data);
-						    function calcTva(tv, pret, diff=false) {         let val = tv;         if (diff) { return ((pret * val) / 100).toString(); } else { return (Number(pret) + ((pret * val) / 100)).toString(); };     };
 						for (let i = 0; i < data.length; i++) {
 							let o = data[i];
 							if (o) {
@@ -389,14 +397,16 @@ function main() {
 							if (o.img) o.img = o.img.replace("/sdcard/catalog.mobil/", "./images/");
 							o.image = o.img || "";
 							if (o.img) delete o.img;
+							if (o.uprice) o.price = o.uprice * Number(o.bax.split(" ")[0]);
+							console.log(o.uprice, o.price, o.bax.split(" ")[0]);
+							if (o.price && o.tva) o.price = calcTva(tva[o.tva], o.price);
 							if (o.uprice && o.tva) o.uprice = calcTva(tva[o.tva], o.uprice);
 							if (o.price) {} else { o.price = 0; };
 							if (o.uprice) {} else { o.uprice = 0; };
 							o.plu = o.sku;
 							if (o.sku) delete o.sku;
-							o.unit = "cut";
 								if (o.coment) delete o.coment;
-								if (o.tva) delete o.tva;
+								//if (o.tva) delete o.tva;
 							if (o.cat) {if (result[o.cat]) {} else { result[o.cat] = []; };
 							result[o.cat].push(o);
 							delete o.cat;
@@ -583,7 +593,7 @@ dialog.appendChild(ifr1);
 				var total = 0;
 				// Pentru fiecare produs facem anmultire
 				for (var i = 0; i < prods.length; i++) {
-					total += prods[i].uprice * ug("cart")[prods[i].plu.toString()];
+					total += Number(prods[i].price) * ug("cart")[prods[i].plu.toString()];
 				}
 				// puterea luari de decizi :))))))))
 				if (raw) return total.toFixed(2);
@@ -744,7 +754,9 @@ dialog.appendChild(ifr1);
 						if (ug("cart")[prods[i].plu.toString()] > 0) {
 						// Creem un URL în care câmpul 0 (starea comenzii) este gol, deoarece starea comenzii se înregistrează în header (trimis de iframe-ul 0), de către agent.
 						// Apoi îl populăm cu date despre produs (cantitate, produs, pret, pretunitar, totalcomanda).
-						var url2 = config.gformURL.replace("FIELD5", `${t} ${config.currency}`).replace("FIELD0", "-").replace("FIELD1", ug("cart")[prods[i].plu.toString()].toString()).replace("FIELD2", prods[i].name).replace("FIELD3", `${((ug("cart")[prods[i].plu.toString()] * prods[i].uprice).toFixed(2)).toString()}%20${config.currency}`).replace("FIELD4", `${Number(prods[i].uprice).toFixed(2)} ${config.currency}`).replace("FIELD6", "");
+						console.log(prods[i], pretCut(prods[i]));
+						console.info(prods[i]);
+						var url2 = config.gformURL.replace("FIELD5", `${t} ${config.currency}`).replace("FIELD0", "-").replace("FIELD1", ug("cart")[prods[i].plu.toString()].toString()).replace("FIELD2", prods[i].name).replace("FIELD3", `${((ug("cart")[prods[i].plu.toString()] * prods[i].price.toString())).toFixed(2)}%20${config.currency}`).replace("FIELD4", `${Number(prods[i].price).toFixed(2)} ${config.currency}`).replace("FIELD6", "");
 						// Creem un iframe, iframe-ul 2.
 						var ifr2 = document.createElement("iframe");
 						// Îi dăm url-ul.
