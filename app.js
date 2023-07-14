@@ -397,7 +397,7 @@ function main() {
 							if (o.img) o.img = o.img.replace("/sdcard/catalog.mobil/", "./images/");
 							o.image = o.img || "";
 							if (o.img) delete o.img;
-							if (o.uprice) o.price = o.uprice * Number(o.bax.split(" ")[0]);
+							//if (o.uprice) o.price = o.uprice * Number(o.bax.split(" ")[0]);
 							console.log(o.uprice, o.price, o.bax.split(" ")[0]);
 							if (o.price && o.tva) o.price = calcTva(tva[o.tva], o.price);
 							if (o.uprice && o.tva) o.uprice = calcTva(tva[o.tva], o.uprice);
