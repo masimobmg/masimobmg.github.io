@@ -106,7 +106,7 @@ function createProductElement(pr, onchange, controls = true, fakecart) {
 	// Punem și fundal dacă se poate.
 	if (pr.image) { e.style.backgroundImage = `url(${pr.image})`; };
 	// Lene
-	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr ? pr.gr + "/buc<br>" : ""}${pr.bax}<br><span class="price">${Number(pr.uprice).toFixed(2).toString()} ${config.currency}/buc<br>${Number(pr.price).toFixed(2)} ${config.currency}/cut</span></p>${!pr.gr ? "<br>" : ""}<button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
+	p.innerHTML += `<div style="white-space: nowrap; text-align: center;"><center><h3 style="text-overflow: ellipsis; overflow: hidden; max-width: 280px;">${pr.name}</h3></center><p>${pr.gr ? pr.gr + "/buc<br>" : ""}${pr.bax}<br><span class="price">${Number(pr.uprice).toFixed(2).toString()} ${config.currency}/buc<br>${Number(pr.price).toFixed(2)} ${config.currency}/cut</span></p>${!pr.gr ? "<br>" : ""}${pr.price ? "" : "<br>"}<button class="subtract">-</button><button class="qt">${(fakecart||ug("cart"))[pr.plu.toString()]||0}</button><button class="add">+</button>&nbsp;&nbsp;<button class="imgvb">IMG</button><br><br><br></div>`;
 	// buton img
 	p.querySelector(".imgvb").addEventListener("click", function() {
 		window.location.href = "?page=imgview&img=" + pr.image.replace("./images/", "") + "&alt=" + pr.name;
@@ -397,6 +397,7 @@ function main() {
 							if (o.img) o.img = o.img.replace("/sdcard/catalog.mobil/", "./images/");
 							o.image = o.img || "";
 							if (o.img) delete o.img;
+							if (o.gr) delete o.gr;
 							//if (o.uprice) o.price = o.uprice * Number(o.bax.split(" ")[0]);
 							console.log(o.uprice, o.price, o.bax.split(" ")[0]);
 							if (o.price && o.tva) o.price = calcTva(tva[o.tva], o.price);
@@ -407,10 +408,12 @@ function main() {
 							if (o.sku) delete o.sku;
 								if (o.coment) delete o.coment;
 								//if (o.tva) delete o.tva;
+							console.log(`${o.name}: ${o.cat} ${i}`);
 							if (o.cat) {if (result[o.cat]) {} else { result[o.cat] = []; };
 							result[o.cat].push(o);
+							console.log(`Push ${o.name} to ${o.cat}`);
 							delete o.cat;
-							} else { result.Necategorizat.push(o); };
+							} else { result.Necategorizat.push(o); console.log(`Push ${o.name} to uncat`) };
 							}
 							};
 						}
