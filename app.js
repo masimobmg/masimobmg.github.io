@@ -817,7 +817,7 @@ dialog.appendChild(ifr1);
 	let constructionPass = "masimo.candy42";
 
 	// Dacă parola nu este corectă, redirecționăm forțat utilizatorul la pagina de construcție.
-	/*if (ug("constructionPass") != constructionPass) {
+	if (ug("constructionPass") != constructionPass) {
 		//pag = "underconstruction";
 		//defaultPag = "underconstruction";
 		//notFoundPag = "underconstruction";
@@ -825,7 +825,7 @@ dialog.appendChild(ifr1);
 		document.body.querySelector("#underconstruction").classList.remove("hidden");
 		document.body.querySelector(".hreal").innerHTML = `<a href="?page=home">Acasă</a>`;
 		callbacks["underconstruction"](document.body.querySelector("#underconstruction"));
-	}*/
+	}
 
 	// ÎN CONSTRUCȚIE //
 
